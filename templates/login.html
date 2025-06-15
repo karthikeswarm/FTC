@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="d-flex justify-content-center align-items-center vh-100">
+    <div class="card shadow p-4" style="max-width: 400px; width: 100%;">
+        <h2 class="text-center mb-4">Login</h2>
+        <form method="POST" class="needs-validation" novalidate>
+            <div class="mb-3">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" class="form-control" name="email" required>
+                <div class="invalid-feedback">Please enter your email address.</div>
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" class="form-control" name="password" required>
+                <div class="invalid-feedback">Please enter your password.</div>
+            </div>
+            <div class="d-grid mb-3">
+                <button type="submit" class="btn btn-success">Login</button>
+            </div>
+        </form>
+
+        <div class="text-center">
+            <p>Don't have an account? <a href="{{ url_for('signup') }}">Sign up</a></p>
+            <p>Forgot your password? <a href="{{ url_for('forgot_password') }}">Reset it here</a></p>
+        </div>
+    </div>
+</div>
+
+<script>
+    (() => {
+        'use strict';
+        const forms = document.querySelectorAll('.needs-validation');
+        Array.from(forms).forEach(form => {
+            form.addEventListener('submit', event => {
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
+        });
+    })();
+</script>
+{% endblock %}

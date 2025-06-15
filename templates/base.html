@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>FTC Store</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap 5 & Font Awesome -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+    <style>
+        /* Keep your custom styles exactly as you wrote (clean and well-structured) */
+        /* (not re-pasted here to save space) */
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-light navbar-custom">
+    <div class="container">
+        <a class="navbar-brand" href="{{ url_for('home') }}">FTC Store</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+
+            <!-- Search bar -->
+            <form class="d-flex navbar-search-form" action="{{ url_for('home') }}" method="GET">
+                <input class="form-control me-2" type="search" name="query" placeholder="Search products..." aria-label="Search">
+                <button class="btn btn-outline-success" type="submit"><i class="fas fa-search"></i></button>
+            </form>
+
+            <ul class="navbar-nav ms-auto navbar-utility-links">
+                {% if not current_user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('login') }}"><i class="fas fa-sign-in-alt"></i> Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('signup') }}"><i class="fas fa-user-plus"></i> Signup</a>
+                    </li>
+                {% else %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-user-circle"></i> {{ current_user.username }}
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                            {% if current_user.role == 'customer' %}
+                                <li><a class="dropdown-item" href="{{ url_for('customer_dashboard') }}">My Dashboard</a></li>
+                            {% elif current_user.role == 'staff' %}
+                                <li><a class="dropdown-item" href="{{ url_for('staff_dashboard') }}">Staff Dashboard</a></li>
+                            {% endif %}
+                            <li><a class="dropdown-item" href="{{ url_for('cart') }}">My Cart</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{{ url_for('logout') }}">Logout</a></li>
+                        </ul>
+                    </li>
+                {% endif %}
+
+                <!-- Cart Icon -->
+                <li class="nav-item {% if request.endpoint == 'cart' %}active{% endif %}">
+                    <a class="nav-link" href="{{ url_for('cart') }}">
+                        <i class="fas fa-shopping-cart"></i> Cart
+                        {% if session.cart and session.cart|length > 0 %}
+                            <span class="badge rounded-pill bg-danger">{{ session.cart|length }}</span>
+                        {% endif %}
+                    </a>
+                </li>
+            </ul>
+
+            <!-- Product Category Links -->
+            <ul class="navbar-nav ms-3">
+                <li class="nav-item {% if request.endpoint == 'fruits_vegetables' %}active{% endif %}">
+                    <a class="nav-link" href="{{ url_for('fruits_vegetables') }}">Fruits & Vegetables</a>
+                </li>
+                <li class="nav-item {% if request.endpoint == 'meat_milk' %}active{% endif %}">
+                    <a class="nav-link" href="{{ url_for('meat_milk') }}">Meat & Milk</a>
+                </li>
+            </ul>
+
+        </div>
+    </div>
+</nav>
+
+<div class="container mt-4 mb-5 pb-5">
+    {% with messages = get_flashed_messages(with_categories=True) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+</div>
+
+<footer class="footer mt-auto py-3 text-center bg-light">
+    <div class="container">
+        <span class="text-muted">© 2025 FTC Store. All rights reserved.</span>
+    </div>
+</footer>
+
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

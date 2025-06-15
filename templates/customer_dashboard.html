@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4">Hello {{ current_user.username }},</h2>
+    <p>Welcome to your dashboard. You can view and manage your orders here.</p>
+    <a href="{{ url_for('cart') }}" class="btn btn-outline-primary">Go to Cart</a>
+</div>
+{% endblock %}
